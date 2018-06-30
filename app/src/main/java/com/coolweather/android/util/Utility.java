@@ -5,6 +5,8 @@ import android.text.TextUtils;
 import com.coolweather.android.db.City;
 import com.coolweather.android.db.County;
 import com.coolweather.android.db.Province;
+import com.coolweather.android.gson.Weather;
+import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -55,7 +57,7 @@ public class Utility {
 
     //解析和处理服务器返回的县级数据，返回数据格式：{“id”：937，“name":"常州“，“weather_id":"CN101190401”}
     public static boolean handleCountyResponse(String response,int cityId){
-        if (TextUtils.isEmpty(response)){
+        if (!TextUtils.isEmpty(response)){
             try {
                 JSONArray allCounties=new JSONArray(response);
                 for (int i=0;i<allCounties.length();i++){
@@ -72,6 +74,21 @@ public class Utility {
             }
         }
         return false;
+    }
+
+    //将返回的JSON数据解析成Weather实体类
+    public static Weather handleWeatherResponse(String response){
+        try{
+            JSONObject jsonObject=new JSONObject(response);
+            JSONArray jsonArray=jsonObject.getJSONArray("HeWeather");
+            //因为返回的数据先是一个{}，需要用jasonobject来解析
+            //{}里面又有[]，是一个数组，需要用JsonArray来解析
+            String weatherContent=jsonArray.getJSONObject(0).toString();
+            return new Gson().fromJson(weatherContent,Weather.class);//将数据里符合Weather.class的项目填充进去
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }

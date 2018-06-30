@@ -1,9 +1,11 @@
 package com.coolweather.android;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +19,7 @@ import android.widget.Toast;
 import com.coolweather.android.db.City;
 import com.coolweather.android.db.County;
 import com.coolweather.android.db.Province;
+import com.coolweather.android.gson.Weather;
 import com.coolweather.android.util.HttpUtil;
 import com.coolweather.android.util.Utility;
 
@@ -73,10 +76,15 @@ public class ChooseAreaFragment extends Fragment {
                 if (currentLevel==LEVEL_PROVINCE){
                     selectedProvince=provinceList.get(position);
                     queryCities();
-                }
-                else if (currentLevel==LEVEL_CITY){
+                } else if (currentLevel==LEVEL_CITY){
                     selectedCity=cityList.get(position);
                     queryCounties();
+                }else if (currentLevel==LEVEL_COUNTY){//跳转到天气的详情界面
+                    String weatherId=countyList.get(position).getWeatherId();
+                    Intent intent=new Intent(getActivity(), WeatherActivity.class);
+                    intent.putExtra("weather_id",weatherId);
+                    startActivity(intent);
+                    getActivity().finish();
                 }
             }
         });
@@ -86,13 +94,14 @@ public class ChooseAreaFragment extends Fragment {
             public void onClick(View v) {
                 if (currentLevel==LEVEL_COUNTY){
                     queryCities();
-                }else if (currentLevel==LEVEL_PROVINCE){
+                }else if (currentLevel==LEVEL_CITY){
                     queryProvinces();
                 }
             }
         });
         queryProvinces();//首先将省的数据显示出来
     }
+
     //查询全国所有的省，优先在数据库查询，如果没有的话再去服务器上查询
     private void queryProvinces(){
         titleText.setText("中国");
@@ -140,6 +149,7 @@ public class ChooseAreaFragment extends Fragment {
         backButtoon.setVisibility(View.VISIBLE);
         countyList=DataSupport.where("cityid=?",String.valueOf(selectedCity.getId())).find(County.class);
         //从county表中获取市id对应的所有county信息
+        Log.d("Code", "countyList: "+countyList);
         if (countyList.size()>0){
             dataList.clear();
             for (County county:countyList){
@@ -149,8 +159,10 @@ public class ChooseAreaFragment extends Fragment {
             listView.setSelection(0);
             currentLevel=LEVEL_COUNTY;
         }else {
+            int provinceCode=selectedProvince.getProvinceCode();
             int cityCode=selectedCity.getCityCode();
-            String address="http://guolin.tech/api/china"+cityCode+"/"+cityCode;
+            String address="http://guolin.tech/api/china/"+provinceCode+"/"+cityCode;
+            Log.d("Code", "queryCounties: "+address);
             queryFromServer(address,"county");
         }
     }
@@ -174,6 +186,7 @@ public class ChooseAreaFragment extends Fragment {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String responseText=response.body().string();
+                Log.d("Code", "onResponse: "+responseText);
                 boolean result=false;
                 if ("province".equals(type)){
                     result= Utility.handleProvinceResponse(responseText);//处理返回的json数据，信息存入数据库
@@ -217,4 +230,5 @@ public class ChooseAreaFragment extends Fragment {
             progressDialog.dismiss();
         }
     }
+
 }
