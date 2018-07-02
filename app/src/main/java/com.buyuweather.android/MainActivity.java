@@ -1,10 +1,12 @@
-package com.coolweather.android;
+package com.buyuweather.android;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import com.buyuweather.android.R;
 
 public class MainActivity extends AppCompatActivity {
 

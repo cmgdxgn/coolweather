@@ -1,8 +1,10 @@
-package com.coolweather.android;
+package com.buyuweather.android;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -16,12 +18,15 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.coolweather.android.db.City;
-import com.coolweather.android.db.County;
-import com.coolweather.android.db.Province;
-import com.coolweather.android.gson.Weather;
-import com.coolweather.android.util.HttpUtil;
-import com.coolweather.android.util.Utility;
+import com.buyuweather.android.MainActivity;
+import com.buyuweather.android.R;
+import com.buyuweather.android.WeatherActivity;
+import com.buyuweather.android.db.City;
+import com.buyuweather.android.db.County;
+import com.buyuweather.android.db.Province;
+import com.buyuweather.android.gson.Weather;
+import com.buyuweather.android.util.HttpUtil;
+import com.buyuweather.android.util.Utility;
 
 import org.litepal.crud.DataSupport;
 
@@ -83,13 +88,13 @@ public class ChooseAreaFragment extends Fragment {
                     String weatherId=countyList.get(position).getWeatherId();//获取具体需要得到天气信息的县城的WeatherId
                     //如果是在启动页面进行选择，直接将参数传递给WeatherActivity
                     if (getActivity() instanceof MainActivity){//如果当前活动是MainActivity
-                        Intent intent=new Intent(getActivity(), WeatherActivity.class);
+                        Intent intent=new Intent(getActivity(), com.buyuweather.android.WeatherActivity.class);
                         intent.putExtra("weather_id",weatherId);
                         startActivity(intent);
                         getActivity().finish();
                     //如果是在天气详情页面选择其他地方，则刷新weatherActivity信息，并关闭导航菜单
-                    }else if (getActivity() instanceof WeatherActivity){
-                        WeatherActivity activity=(WeatherActivity)getActivity();//得到当前活动的实例
+                    }else if (getActivity() instanceof com.buyuweather.android.WeatherActivity){
+                        com.buyuweather.android.WeatherActivity activity=(WeatherActivity)getActivity();//得到当前活动的实例
                         activity.drawerLayout.closeDrawers();//关闭导航菜单
                         activity.swipeRefresh.setRefreshing(true);//开启刷新
                         activity.requestWeather(weatherId);//调用requestWeather方法刷新天气

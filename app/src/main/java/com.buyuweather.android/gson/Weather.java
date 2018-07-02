@@ -1,5 +1,8 @@
-package com.coolweather.android.gson;
+package com.buyuweather.android.gson;
 
+import com.buyuweather.android.gson.Aqi;
+import com.buyuweather.android.gson.Basic;
+import com.buyuweather.android.gson.Now;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;

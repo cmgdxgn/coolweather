@@ -5,8 +5,8 @@
     <version value="1"></version>
 
     <list>
-        <mapping class="com.coolweather.android.db.Province"></mapping>
-        <mapping class="com.coolweather.android.db.City"></mapping>
-        <mapping class="com.coolweather.android.db.County"></mapping>
+        <mapping class="com.buyuweather.android.db.Province"></mapping>
+        <mapping class="com.buyuweather.android.db.City"></mapping>
+        <mapping class="com.buyuweather.android.db.County"></mapping>
     </list>
 </litepal>
